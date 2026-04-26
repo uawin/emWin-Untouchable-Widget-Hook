@@ -18,7 +18,7 @@ This small, header-only library containing only 2 files of source code (.h and .
 * **Non-Invasive:** Does not require emWin source code; works via `User Data` and `Extra Bytes`.
 * **Recursive Control:** Toggle "untouchable" behavior for a parent window and all its children with a single call.
 * **Extensible:** Easily add support for any missed widgets (the core templates for common widgets like `BUTTON`, `EDIT`, `FRAMEWIN`, `MULTIPAGE` etc. are already included).
-* **Minimal Footprint**: Uses only single callback for ALL emWin's widgets and objects.
+* **Minimal Footprint**: Uses only a single callback for ALL emWin's widgets and objects.
 
 ### Usage Example
 
