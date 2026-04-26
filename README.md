@@ -1,18 +1,56 @@
-# emWin-Untouchable-Widget-Hook
+# emWin Untouchable
 
-The version 5.50 of emWin (GUI-library by Segger for embedded applications) has a new function WM_SetUntouchable. 
-This function enables you to make window "untouchable" for PID-messages. This is very helpful if you create windows like screen-keypads and wish to avoid context (focus) switch to bottom placed windows.
+**Backporting Modality to Older Versions of emWin (STemWin)**
 
-But this function is absent in previous versions of emWin.
+The version 5.50 of **emWin** (GUI library by Segger for embedded applications) introduced a new function `WM_SetUntouchable`. This function allows making a window "untouchable" for PID messages (touch/mouse events). This is essential for creating overlays like screen keypads while avoiding unwanted focus switches to windows in the background.
 
-And it was a reason to write this small library, allows to create "untouchable" windows/widgets for emWin versions before 5.50.
+### Problem
 
-It can be used also if you have only precompiled emWin-library instead of its source code.
+However, this function is absent in older versions of emWin and STemWin (like **v5.44**, which is still standard for many STM32 projects).
 
-You can easily extend this lib with absent widgets (some of standard emWin-widgets are missed, because I do not use them in my project).
+### The Solution
 
-For every "create"-function like FRAMEWIN_CreateEx or WINDOW_CreateEx, BUTTON_CreateEx, EDIT_CreateEx etc. there is corresponding FRAMEWIN_CreateUntouchable or WINDOW_CreateUntouchable, BUTTON_CreateUntouchable, EDIT_CreateUntouchable etc.
+This small, header-only library containing only 2 files of source code (.h and .c) allows you to create "untouchable" windows and widgets in emWin versions prior to 5.50. It uses a **callback-hooking mechanism** and works even if you are using a **precompiled binary library** instead of source code.
 
-And if you used them, you can use the only one call of function setUntouchable(WM_HWIN hWin, U8 OnOff) to enable/disable "untouchable"-behaviour for some parent-window including all its childs.
+### Key Features
 
-Also you can use indirect creators like WINDOW_CreateUntouchableIndirect or DROPDOWN_CreateUntouchableIndirect etc. instead of WINDOW_CreateIndirect or DROPDOWN_CreateIndirect etc.
+* **Compatibility:** Designed for emWin versions before 5.50.
+* **Non-Invasive:** Does not require emWin source code; works via `User Data` and `Extra Bytes`.
+* **Recursive Control:** Toggle "untouchable" behavior for a parent window and all its children with a single call.
+* **Extensible:** Easily add support for any missed widgets (the core templates for common widgets like `BUTTON`, `EDIT`, `FRAMEWIN`, `MULTIPAGE` etc. are already included).
+
+### Usage Example
+
+Instead of standard creation functions, use the `Untouchable` equivalents:
+
+```c
+#include "Untouchable.h"
+
+void CreateMyUI(void) {
+    WM_HWIN hBtn;
+    
+    // Create a button with "untouchable" support
+    hBtn = BUTTON_CreateUntouchable(10, 10, 80, 30, hParent, WM_CF_SHOW, 0, ID_BTN_1);
+    
+    // Make the button (and its children, if any) "untouchable"
+    setUntouchable(hBtn, 1); 
+}
+```
+### Supported Creation Methods
+
+* `FRAMEWIN_CreateUntouchable` / `FRAMEWIN_CreateUntouchableIndirect`
+* `WINDOW_CreateUntouchable` / `WINDOW_CreateUntouchableIndirect`
+* `BUTTON_CreateUntouchable` / `BUTTON_CreateUntouchableIndirect`
+* `EDIT_CreateUntouchable` / `EDIT_CreateUntouchableIndirect`
+* `MULTIPAGE_CreateUntouchable` / `MULTIPAGE_CreateUntouchableIndirect`
+* ...and many others (`Dropdown`, `Listview`, `Radio`).
+
+### Modality Control
+
+```c
+setUntouchable(hWin, 1); // Enable
+setUntouchable(hWin, 0); // Disable
+```
+
+---
+*Note: This library was created to solve architectural problems in complex industrial UIs.*
