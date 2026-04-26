@@ -54,6 +54,6 @@ setUntouchable(hWin, 0); // Disable
 ```
 
 
-* **Note: Each untouchable widget requires sizeof(UntouchInfo_t) extra bytes.**
+* **Note**: Each untouchable widget requires `sizeof(UntouchInfo_t)` extra bytes.
 ---
 This library was created to solve architectural problems in complex industrial UIs. 
